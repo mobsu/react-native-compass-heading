@@ -30,7 +30,7 @@ class CompassHeadingModule(reactContext: ReactApplicationContext) :
     private val mGeomagnetic = FloatArray(3)
     private val R = FloatArray(9)
     private val I = FloatArray(9)
-    private val mAccuracy: Int = 3 // 0..3
+    private var mAccuracy: Int = 3 // 0..3
 
     override fun getName(): String {
         return NAME
