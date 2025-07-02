@@ -30,6 +30,7 @@ class CompassHeadingModule(reactContext: ReactApplicationContext) :
     private val mGeomagnetic = FloatArray(3)
     private val R = FloatArray(9)
     private val I = FloatArray(9)
+    private val mAccuracy: Int = 3 // 0..3
 
     override fun getName(): String {
         return NAME
@@ -122,7 +123,7 @@ class CompassHeadingModule(reactContext: ReactApplicationContext) :
                     mAzimuth = newAzimuth.toInt()
                     val params = Arguments.createMap().apply {
                         putDouble("heading", mAzimuth.toDouble())
-                        putDouble("accuracy", 1.0)
+                        putDouble("accuracy", mAccuracy)
                     }
                     reactApplicationContext
                         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
@@ -133,7 +134,16 @@ class CompassHeadingModule(reactContext: ReactApplicationContext) :
         }
     }
 
-    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
+    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+       when (sensor.type) {
+            Sensor.TYPE_MAGNETIC_FIELD -> {
+                mAccuracy = accuracy
+            }
+            else -> {
+                // Ei tehdä mitään
+            }
+        }
+    }
 
     private fun getDisplay(): Display? {
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
