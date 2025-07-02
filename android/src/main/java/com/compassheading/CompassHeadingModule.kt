@@ -123,7 +123,7 @@ class CompassHeadingModule(reactContext: ReactApplicationContext) :
                     mAzimuth = newAzimuth.toInt()
                     val params = Arguments.createMap().apply {
                         putDouble("heading", mAzimuth.toDouble())
-                        putDouble("accuracy", mAccuracy)
+                        putDouble("accuracy", mAccuracy.toDouble())
                     }
                     reactApplicationContext
                         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
