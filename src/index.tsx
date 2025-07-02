@@ -17,7 +17,7 @@ const CompassHeading = NativeModules.CompassHeading
       }
     );
 
-let listener: { remove: () => any } | null;
+let listener: { remove: () => any } | null = null;
 
 let _start = CompassHeading.start;
 
@@ -30,8 +30,9 @@ CompassHeading.start = async (
   update_rate: number,
   callback: (data: dataType) => void
 ) => {
+
   if (listener) {
-    await CompassHeading.stop();
+    await CompassHeading.stop(); // Clean up previous listener
   }
 
   const compassEventEmitter = new NativeEventEmitter(CompassHeading);
@@ -42,13 +43,16 @@ CompassHeading.start = async (
     }
   );
 
-  return await _start(update_rate === null ? 0 : update_rate);
+  const result = await _start(update_rate === null ? 0 : update_rate);
+  return result;
 };
 
 let _stop = CompassHeading.stop;
 CompassHeading.stop = async () => {
-  listener && listener.remove();
-  listener = null;
+  if (listener) {
+    listener.remove();
+    listener = null;
+  }
   await _stop();
 };
 

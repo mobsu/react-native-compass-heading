@@ -1,35 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
+
+import { View, Text } from 'react-native';
 import CompassHeading from 'react-native-compass-heading';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
 const App = () => {
-  const [heading, setHeading] = useState(0);
-  const [accuracy, setAccuracy] = useState(0);
-
   React.useEffect(() => {
     const degree_update_rate = 3;
 
-    CompassHeading.start(degree_update_rate, (data) => {
-      setHeading(data.heading);
-      setAccuracy(data.accuracy);
-    });
+    const unsubscribe = CompassHeading.start(
+      degree_update_rate,
+      ({ heading, accuracy }) => {
+        console.log('CompassHeading update:', heading, accuracy);
+      }
+    );
 
     return () => {
-      CompassHeading.stop();
+      console.log('unsubscribe');
+      unsubscribe(); // Stop the compass updates when the component unmounts
     };
   }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>{'heading: ' + heading}</Text>
-      <Text>{'accuracy: ' + accuracy}</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Compass Heading Test</Text>
     </View>
   );
 };
